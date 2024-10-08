@@ -1,0 +1,96 @@
+
+
+.carousel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 60px;
+}
+
+.hFrame {
+    position: fixed;
+    top: 0;
+    left: 0vw;
+    height: 100vh;
+    /* background-color: #ffffff82; */
+    align-items: center;
+    display: none;
+    opacity: 0;
+    transition: left .7s ease-out,
+    top .5s,
+    opacity .5s;
+}
+
+.hFrame-img {
+    flex-shrink: 0;
+    width: 100vw;
+    height: 100vh;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: scale(100%);
+    transition: all .3s;
+}
+
+.hFrame.open {
+    opacity: 100;
+    top: 0 !important;
+}
+.hFrame.open .hFrame-img {
+    transform: scale(80%);
+}
+
+.slide {
+    height: 100vh;
+    cursor: pointer;
+}
+
+.carousel-filter {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    opacity: 0;
+    display: none;
+    transition: all .5s;
+}
+
+.carousel-filter.open {
+    opacity: 50%;
+}
+
+.carousel-prev, .carousel-next {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 50vw;
+    /* background-color: red; */
+    z-index: 1;
+}
+
+.carousel-next {
+    right: 0;
+    cursor: e-resize;
+}
+
+.carousel-prev {
+    left: 0;
+    cursor: w-resize;
+}
+
+
+.carousel-close {
+    position: fixed;
+    z-index: 2;
+    top: 20px;
+    right: 20px;
+    font-size: 50px;
+    cursor: pointer;
+}
+
+
+
