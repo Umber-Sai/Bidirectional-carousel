@@ -45,11 +45,11 @@
 }
 
 .hFrame.right {
-    cursor: url("../img/cursor_next.svg") 9 9, pointer;
+    cursor: url("./img/cursor_next.svg") 9 9, pointer;
 }
 
 .hFrame.left {
-    cursor: url("../img/cursor_prev.svg") 9 9, pointer;
+    cursor: url("./img/cursor_prev.svg") 9 9, pointer;
 }
 
 .hFrame.open {
