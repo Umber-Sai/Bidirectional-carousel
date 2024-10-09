@@ -28,42 +28,67 @@ function carousel(pictures) {
     }
 
     hFrame.onmousemove = (event) => {
+
         if(event.clientX > window.screen.width/2) {
             hFrame.classList.remove('left');
             hFrame.classList.add('right');
-            hFrame.onclick = nextSlide
+            hFrame.onclick = () => {
+                if(isMoove) return
+                nextSlide()
+            }
         } else {
             hFrame.classList.remove('right');
             hFrame.classList.add('left');
-            hFrame.onclick = prevSlide
+            hFrame.onclick = () => {
+                if(isMoove) return
+                prevSlide()
+            }
         }
     }
 
-    // hFrame.ontouchmove = (event) => {
-    //     if(!isMoove) {
-    //         startX = event.targetTouches[0].clientX;
-    //         startY = event.targetTouches[0].clientY;
-    //     };
-    //     isMoove = true;
-    //     currentX = event.targetTouches[0].clientX;
-    //     currentY = event.targetTouches[0].clientY;
-    //     hFrame.classList.add('noTransition');
-    //     hFrame.style.left = `calc(-100vw * ${currentSlide} + ${currentX - startX}px)`;
-    // }
+    hFrame.ontouchstart = (event) => {
+        
+        startX = event.targetTouches[0].clientX;
+        startY = event.targetTouches[0].clientY;
+        currentX = event.targetTouches[0].clientX;
+        currentY = event.targetTouches[0].clientY;
 
-    // hFrame.ontouchend = (event) => {
-    //     isMoove = false
-    //     hFrame.classList.remove('noTransition');
-    //     const offsetX = currentX - startX;
-    //     const offsetY = currentY - startY;
+        hFrame.ontouchmove = (event) => {
+            isMoove = true;
+            hFrame.style.transition = 'none'
+            currentX = event.targetTouches[0].clientX;
+            currentY = event.targetTouches[0].clientY;
+            hFrame.style.left = `calc(-100vw * ${currentSlide} + ${currentX - startX}px)`;
+        }
+    }
 
-    //     if(offsetX > window.screen.width/10) {prevSlide()}
-    //     else if(offsetX < - window.screen.width/10) {nextSlide()}
-    //     else {
-    //         if(Math.abs(offsetY) > 100) {closeCarousel()}
-    //         hFrame.style.left = `calc(-100vw * ${currentSlide})`;
-    //     }
-    // }
+    
+
+    hFrame.ontouchend = (event) => {
+        isMoove = false;
+        hFrame.style.transition = 'all .5s';
+    
+        const offsetX = currentX - startX;
+        const offsetY = currentY - startY;
+    
+        // Проверка для прокрутки по горизонтали
+        if (Math.abs(offsetX) > window.screen.width / 10) {
+            const direction = Math.sign(offsetX);
+            if (direction === 1) { // свайп вправо
+                prevSlide();
+            } else if (direction === -1) { // свайп влево
+                nextSlide();
+            }
+        } else {
+            // Если свайп недостаточно велик
+            hFrame.style.left = `calc(-100vw * ${currentSlide})`;
+        }
+    
+        // Проверка для закрытия карусели при вертикальном движении
+        if (Math.abs(offsetY) > 100) {
+            closeCarusel();
+        }
+    };
 
 
 
@@ -180,6 +205,7 @@ function carousel(pictures) {
     function nextSlide() {
         if(currentSlide + 1 < pictures.length) {
             currentSlide ++
+            console.log(currentSlide)
             document.getElementById('slide' + currentSlide).scrollIntoView({ behavior: 'smooth', block: 'center' });
             hFrame.style.left = `calc(-100vw * ${currentSlide})`;
         } else {
@@ -193,6 +219,7 @@ function carousel(pictures) {
     function prevSlide() {
         if(currentSlide - 1 >= 0) {
             currentSlide --
+            console.log(currentSlide)
             document.getElementById('slide' + currentSlide).scrollIntoView({ behavior: 'smooth', block: 'center' });
             hFrame.style.left = `calc(-100vw * ${currentSlide})`;
         } else {
