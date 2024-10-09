@@ -11,7 +11,7 @@ function carousel(pictures) {
     let currentX 
     let startY
     let currentY
-    let currentSlide = 0;
+    let currentSlide = 5;
     let slides = []
     let hImges =[]
 
@@ -46,21 +46,21 @@ function carousel(pictures) {
         }
     }
 
-    hFrame.ontouchstart = (event) => {
+    // hFrame.ontouchstart = (event) => {
         
-        startX = event.targetTouches[0].clientX;
-        startY = event.targetTouches[0].clientY;
-        currentX = event.targetTouches[0].clientX;
-        currentY = event.targetTouches[0].clientY;
+    //     startX = event.targetTouches[0].clientX;
+    //     startY = event.targetTouches[0].clientY;
+    //     currentX = event.targetTouches[0].clientX;
+    //     currentY = event.targetTouches[0].clientY;
 
-        hFrame.ontouchmove = (event) => {
-            isMoove = true;
-            hFrame.style.transition = 'none'
-            currentX = event.targetTouches[0].clientX;
-            currentY = event.targetTouches[0].clientY;
-            hFrame.style.left = `calc(-100vw * ${currentSlide} + ${currentX - startX}px)`;
-        }
-    }
+    //     hFrame.ontouchmove = (event) => {
+    //         isMoove = true;
+    //         hFrame.style.transition = 'none'
+    //         currentX = event.targetTouches[0].clientX;
+    //         currentY = event.targetTouches[0].clientY;
+    //         hFrame.style.left = `calc(-100vw * ${currentSlide} + ${currentX - startX}px)`;
+    //     }
+    // }
 
     
 
@@ -94,7 +94,7 @@ function carousel(pictures) {
 
 
 
-
+    
 
 
 
@@ -219,16 +219,12 @@ function carousel(pictures) {
     function prevSlide() {
         if(currentSlide - 1 >= 0) {
             currentSlide --
-            console.log(currentSlide)
-            document.getElementById('slide' + currentSlide).scrollIntoView({ behavior: 'smooth', block: 'center' });
-            hFrame.style.left = `calc(-100vw * ${currentSlide})`;
-        } else {
-            hFrame.style.left = "10vw";
-            setTimeout(() => {
-                hFrame.style.left = '0';
-            }, 100);
+            hFrame.scrollTo({
+                left: currentSlide * window.innerWidth + 'px',
+                behavior: 'smooth'
+            });
         }
-        
+       
     }
 }
 
