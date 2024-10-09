@@ -13,6 +13,7 @@ function carousel(pictures) {
     let currentY
     let currentSlide = 0;
     let slides = []
+    let hImges =[]
 
     init();
 
@@ -54,7 +55,7 @@ function carousel(pictures) {
         if(offsetX > window.screen.width/10) {prevSlide()}
         else if(offsetX < - window.screen.width/10) {nextSlide()}
         else {
-            if(Math.abs(offsetY) > 20) {closeCarousel()}
+            if(Math.abs(offsetY) > 100) {closeCarousel()}
             hFrame.style.left = `calc(-100vw * ${currentSlide})`;
         }
     }
@@ -64,6 +65,16 @@ function carousel(pictures) {
         closeCarousel()
     });
 
+
+
+
+
+
+
+
+
+
+    //functions
     function init () {
         filterElement.className = 'carousel-filter'
         hFrame.className = 'hFrame'
@@ -89,32 +100,41 @@ function carousel(pictures) {
 
             //слайд для hFrame
             const hSlide = document.createElement('div');
-            hSlide.style.backgroundImage = `url(images/${pictures[i]})`;
-            hSlide.className = 'hFrame-img';
-
+            hSlide.className = 'hFrame-slide';
+            const hSlideImg = document.createElement('img');
+            hSlideImg.setAttribute('src',`./images/${pictures[i]}`);
+            hSlideImg.classList.add('hFrame-slide-img');
+            hImges.push(hSlideImg)
+            hSlide.appendChild(hSlideImg);
             hFrame.append(hSlide)
         }
     }
 
     function openCarousel() {
-        this.scrollIntoView({ behavior: 'smooth'});
-        if(window.screen.width < minimalScreenWidth) return
+        this.scrollIntoView({ behavior: 'smooth', block: 'center'});
+        if(window.screen.width <= window.screen.height) return
         currentSlide = slides.indexOf(this);
+        const hImageElement = hImges[currentSlide];
+        
         hFrame.style.left = `calc(-100vw * ${currentSlide})`;
-        hFrame.style.top = `${this.getBoundingClientRect().top}px`;
+        hImageElement.style.top = `${this.getBoundingClientRect().top}px`;
+
+        console.log(hImageElement.getBoundingClientRect().top)
+        console.log(this.getBoundingClientRect().top)
         
         hFrame.style.display = 'flex';
         filterElement.style.display = 'flex';
         setTimeout(() => {
             filterElement.classList.add('open');
+            hImageElement.style.top = (window.screen.height/2 - hImageElement.getBoundingClientRect().height/2) + 'px';
             hFrame.classList.add('open');
         }, 0)
-       
-        console.log(hFrame.getElementsByClassName('hFrame-img'))
     }
 
     function closeCarousel(event) {
-        hFrame.style.top = `${slides[currentSlide].getBoundingClientRect().top}px`;
+        // hFrame.style.top = `${slides[currentSlide].getBoundingClientRect().top}px`;
+        const hImageElement = hImges[currentSlide];
+        hImageElement.style.top = `${slides[currentSlide].getBoundingClientRect().top}px`;
         hFrame.classList.remove('open');
         filterElement.classList.remove('open');
         
@@ -128,7 +148,7 @@ function carousel(pictures) {
     function nextSlide() {
         if(currentSlide + 1 < pictures.length) {
             currentSlide ++
-            document.getElementById('slide' + currentSlide).scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('slide' + currentSlide).scrollIntoView({ behavior: 'smooth', block: 'center' });
             hFrame.style.left = `calc(-100vw * ${currentSlide})`;
         } else {
             hFrame.style.left = `calc(-100vw * ${currentSlide} - 10vw)`;
@@ -141,7 +161,7 @@ function carousel(pictures) {
     function prevSlide() {
         if(currentSlide - 1 >= 0) {
             currentSlide --
-            document.getElementById('slide' + currentSlide).scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('slide' + currentSlide).scrollIntoView({ behavior: 'smooth', block: 'center' });
             hFrame.style.left = `calc(-100vw * ${currentSlide})`;
         } else {
             hFrame.style.left = "10vw";
@@ -156,8 +176,8 @@ function carousel(pictures) {
 const pictures = [
     '001.jpg',
     '002.jpg',
-    '003.jpg',
     '004.jpg',
+    '003.jpg',
 ]
 
 carousel(pictures);
