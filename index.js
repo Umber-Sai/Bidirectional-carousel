@@ -17,6 +17,11 @@ function carousel(pictures) {
 
     init();
 
+    closeElement.addEventListener('click', (event) => {
+        event.stopPropagation()
+        closeCarusel()
+    })
+
     //активируем карусель по нажатию на картинку (сдайл)
     for (let i = 0; i < slides.length; i++) {
         slides[i].addEventListener('click', openCarousel);
@@ -34,36 +39,35 @@ function carousel(pictures) {
         }
     }
 
-    hFrame.ontouchmove = (event) => {
-        if(!isMoove) {
-            startX = event.targetTouches[0].clientX;
-            startY = event.targetTouches[0].clientY;
-        };
-        isMoove = true;
-        currentX = event.targetTouches[0].clientX;
-        currentY = event.targetTouches[0].clientY;
-        hFrame.classList.add('noTransition');
-        hFrame.style.left = `calc(-100vw * ${currentSlide} + ${currentX - startX}px)`;
-    }
+    // hFrame.ontouchmove = (event) => {
+    //     if(!isMoove) {
+    //         startX = event.targetTouches[0].clientX;
+    //         startY = event.targetTouches[0].clientY;
+    //     };
+    //     isMoove = true;
+    //     currentX = event.targetTouches[0].clientX;
+    //     currentY = event.targetTouches[0].clientY;
+    //     hFrame.classList.add('noTransition');
+    //     hFrame.style.left = `calc(-100vw * ${currentSlide} + ${currentX - startX}px)`;
+    // }
 
-    hFrame.ontouchend = (event) => {
-        isMoove = false
-        hFrame.classList.remove('noTransition');
-        const offsetX = currentX - startX;
-        const offsetY = currentY - startY;
+    // hFrame.ontouchend = (event) => {
+    //     isMoove = false
+    //     hFrame.classList.remove('noTransition');
+    //     const offsetX = currentX - startX;
+    //     const offsetY = currentY - startY;
 
-        if(offsetX > window.screen.width/10) {prevSlide()}
-        else if(offsetX < - window.screen.width/10) {nextSlide()}
-        else {
-            if(Math.abs(offsetY) > 100) {closeCarousel()}
-            hFrame.style.left = `calc(-100vw * ${currentSlide})`;
-        }
-    }
+    //     if(offsetX > window.screen.width/10) {prevSlide()}
+    //     else if(offsetX < - window.screen.width/10) {nextSlide()}
+    //     else {
+    //         if(Math.abs(offsetY) > 100) {closeCarousel()}
+    //         hFrame.style.left = `calc(-100vw * ${currentSlide})`;
+    //     }
+    // }
 
-    closeElement.addEventListener('click', (event) => {
-        event.stopPropagation();
-        closeCarousel()
-    });
+
+
+
 
 
 
@@ -111,38 +115,65 @@ function carousel(pictures) {
     }
 
     function openCarousel() {
+        
         this.scrollIntoView({ behavior: 'smooth', block: 'center'});
-        if(window.screen.width <= window.screen.height) return
+        if(window.screen.width < minimalScreenWidth) return;
+
         currentSlide = slides.indexOf(this);
         const hImageElement = hImges[currentSlide];
-        
-        hFrame.style.left = `calc(-100vw * ${currentSlide})`;
-        hImageElement.style.top = `${this.getBoundingClientRect().top}px`;
 
-        console.log(hImageElement.getBoundingClientRect().top)
-        console.log(this.getBoundingClientRect().top)
-        
-        hFrame.style.display = 'flex';
-        filterElement.style.display = 'flex';
+        const instruction = [
+            () => {
+                hFrame.style.display = 'flex';
+                hImageElement.style.transition = 'none'
+                hFrame.style.left = `calc(-100vw * ${currentSlide})`;
+                hImageElement.style.top = `calc(${this.getBoundingClientRect().height/2}px + ${this.getBoundingClientRect().top}px)`;
+                console.log(this.getBoundingClientRect())
+                hImageElement.style.transform = 'translate(-50%, -50%) scale(100%)'
+                hFrame.style.opacity = '100%';
+                filterElement.style.display = 'block';
+            },
+            () => {
+                filterElement.style.opacity = '80%'
+                hImageElement.style.transition = 'all .5s';
+                hImageElement.style.top = '50%'
+                hImageElement.style.transform = 'translate(-50%, -50%) scale(80%)'
+                hFrame.style.transition = 'all .7s';
+            }
+        ]
+
+        instruction[0]();
         setTimeout(() => {
-            filterElement.classList.add('open');
-            hImageElement.style.top = (window.screen.height/2 - hImageElement.getBoundingClientRect().height/2) + 'px';
-            hFrame.classList.add('open');
-        }, 0)
+            instruction[1]();
+        }, 10)
     }
 
-    function closeCarousel(event) {
-        // hFrame.style.top = `${slides[currentSlide].getBoundingClientRect().top}px`;
+
+    function closeCarusel() {
         const hImageElement = hImges[currentSlide];
-        hImageElement.style.top = `${slides[currentSlide].getBoundingClientRect().top}px`;
-        hFrame.classList.remove('open');
-        filterElement.classList.remove('open');
-        
+        const SlideElement = slides[currentSlide];
+
+        const instruction = [
+            () => {
+                hImageElement.style.transition = 'all .5s';
+                hImageElement.style.top = `calc(${SlideElement.getBoundingClientRect().height/2}px + ${SlideElement.getBoundingClientRect().top}px)`;
+                hImageElement.style.transform = 'translate(-50%, -50%) scale(100%)'
+                hFrame.style.opacity = '0%'
+                filterElement.style.opacity = '0%'
+            },
+            () => {
+                hImageElement.style.transform = 'translate(-50%, -50%) scale(80%)'
+                filterElement.style.display = 'none';
+                hImageElement.style.top = '50%'
+                hFrame.style.display = 'none';
+                hFrame.style.transition = 'none';
+            }
+        ]
+
+        instruction[0]()
         setTimeout(() => {
-            hFrame.style.display = 'none';
-            filterElement.style.display = 'none';
+            instruction[1]()
         }, 500)
-        
     }
 
     function nextSlide() {
@@ -169,6 +200,7 @@ function carousel(pictures) {
                 hFrame.style.left = '0';
             }, 100);
         }
+        
     }
 }
 
