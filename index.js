@@ -5,7 +5,7 @@ function carousel(pictures) {
     const filterElement = document.createElement('div');
     const closeElement = document.createElement('close');
 
-    const minimalScreenWidth = 550 //ниже этой ширины экрана карусель не будет открываться, но останется скролл до картики
+    const minimalScreenWidth = 400 //ниже этой ширины экрана карусель не будет открываться, но останется скролл до картики
     let isMoove = false;
     let startX 
     let currentX 
@@ -108,6 +108,7 @@ function carousel(pictures) {
             const hSlideImg = document.createElement('img');
             hSlideImg.setAttribute('src',`./images/${pictures[i]}`);
             hSlideImg.classList.add('hFrame-slide-img');
+            // hSlideImg.style.maxWidth = motherElement.getBoundingClientRect().width + 'px'
             hImges.push(hSlideImg)
             hSlide.appendChild(hSlideImg);
             hFrame.append(hSlide)
@@ -124,11 +125,11 @@ function carousel(pictures) {
 
         const instruction = [
             () => {
+                hImageElement.style.width = this.getBoundingClientRect().width + 'px'
                 hFrame.style.display = 'flex';
                 hImageElement.style.transition = 'none'
                 hFrame.style.left = `calc(-100vw * ${currentSlide})`;
                 hImageElement.style.top = `calc(${this.getBoundingClientRect().height/2}px + ${this.getBoundingClientRect().top}px)`;
-                console.log(this.getBoundingClientRect())
                 hImageElement.style.transform = 'translate(-50%, -50%) scale(100%)'
                 hFrame.style.opacity = '100%';
                 filterElement.style.display = 'block';

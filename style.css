@@ -3,8 +3,13 @@ body {
     padding: 0;
 }
 
+
+
 .carousel {
-    width: 100%;
+    max-width: 600px;
+    padding: 0 15px;
+    box-sizing: border-box;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -37,18 +42,14 @@ body {
     flex-shrink: 0;
     width: 100vw;
     height: 100vh;
-    /* display: flex;
-    align-items: center;
-    justify-content: center; */
     position: relative;
     transition: all .5s;
-
 }
 
 .hFrame-slide-img {
     transform: translate(-50%, -50%) scale(80%);
     max-height: 100vh;
-    max-width: 100%;
+    max-width: clamp(295px, calc(100vw - 30px), 600px);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -101,8 +102,8 @@ body {
 .carousel-close {
     position: fixed;
     z-index: 2;
-    top: 20px;
-    right: 20px;
+    top: clamp(5px, 3vw, 20px);
+    right: clamp(5px, 3vw, 20px);
     font-size: 50px;
     cursor: pointer;
 }
