@@ -74,12 +74,12 @@
 
 .carousel-next {
     right: 0;
-    cursor: e-resize;
+    cursor: url("../img/cursor_next.svg") 9 9, pointer;
 }
 
 .carousel-prev {
     left: 0;
-    cursor: w-resize;
+    cursor: url("../img/cursor_prev.svg") 9 9, pointer;
 }
 
 
