@@ -6,11 +6,19 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    row-gap: 60px;
+    row-gap: 5vw;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.slide {
+    max-height: 100vh;
+    max-width: 100%;
+    cursor: pointer;
 }
 
 .hFrame {
     position: fixed;
+    z-index: 1001;
     top: 0;
     left: 0vw;
     height: 100vh;
@@ -18,9 +26,11 @@
     align-items: center;
     display: none;
     opacity: 0;
-    transition: left .7s ease-out,
-    top .5s,
-    opacity .5s;
+    transition: all .5s ease-out;
+    /* left .7s ease-out; */
+}
+.hFrame.noTransition {
+    transition: none;
 }
 
 .hFrame-img {
@@ -34,6 +44,14 @@
     transition: all .3s;
 }
 
+.hFrame.right {
+    cursor: url("../img/cursor_next.svg") 9 9, pointer;
+}
+
+.hFrame.left {
+    cursor: url("../img/cursor_prev.svg") 9 9, pointer;
+}
+
 .hFrame.open {
     opacity: 100;
     top: 0 !important;
@@ -42,13 +60,11 @@
     transform: scale(80%);
 }
 
-.slide {
-    height: 100vh;
-    cursor: pointer;
-}
+
 
 .carousel-filter {
     position: fixed;
+    z-index: 1000;
     top: 0;
     right: 0;
     bottom: 0;
@@ -60,7 +76,7 @@
 }
 
 .carousel-filter.open {
-    opacity: 50%;
+    opacity: 80%;
 }
 
 .carousel-prev, .carousel-next {
@@ -68,19 +84,15 @@
     top: 0;
     height: 100vh;
     width: 50vw;
-    /* background-color: red; */
     z-index: 1;
 }
 
 .carousel-next {
     right: 0;
-    cursor: url("../img/cursor_next.svg") 9 9, pointer;
+   
 }
 
-.carousel-prev {
-    left: 0;
-    cursor: url("../img/cursor_prev.svg") 9 9, pointer;
-}
+
 
 
 .carousel-close {

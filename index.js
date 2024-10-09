@@ -3,11 +3,14 @@ function carousel(pictures) {
     const motherElement = document.getElementById('carousel')
     const hFrame = document.createElement('div') //horizontal frame
     const filterElement = document.createElement('div');
-
-    const nextElement = document.createElement('div');
-    const prevElement = document.createElement('div');
     const closeElement = document.createElement('close');
 
+    const minimalScreenWidth = 550 //ниже этой ширины экрана карусель не будет открываться, но останется скролл до картики
+    let isMoove = false;
+    let startX 
+    let currentX 
+    let startY
+    let currentY
     let currentSlide = 0;
     let slides = []
 
@@ -18,20 +21,55 @@ function carousel(pictures) {
         slides[i].addEventListener('click', openCarousel);
     }
 
-    nextElement.addEventListener('click', nextSlide)
-    prevElement.addEventListener('click', prevSlide)
-    closeElement.addEventListener('click', closeCarousel);
+    hFrame.onmousemove = (event) => {
+        if(event.clientX > window.screen.width/2) {
+            hFrame.classList.remove('left');
+            hFrame.classList.add('right');
+            hFrame.onclick = nextSlide
+        } else {
+            hFrame.classList.remove('right');
+            hFrame.classList.add('left');
+            hFrame.onclick = prevSlide
+        }
+    }
+
+    hFrame.ontouchmove = (event) => {
+        if(!isMoove) {
+            startX = event.targetTouches[0].clientX;
+            startY = event.targetTouches[0].clientY;
+        };
+        isMoove = true;
+        currentX = event.targetTouches[0].clientX;
+        currentY = event.targetTouches[0].clientY;
+        hFrame.classList.add('noTransition');
+        hFrame.style.left = `calc(-100vw * ${currentSlide} + ${currentX - startX}px)`;
+    }
+
+    hFrame.ontouchend = (event) => {
+        isMoove = false
+        hFrame.classList.remove('noTransition');
+        const offsetX = currentX - startX;
+        const offsetY = currentY - startY;
+
+        if(offsetX > window.screen.width/10) {prevSlide()}
+        else if(offsetX < - window.screen.width/10) {nextSlide()}
+        else {
+            if(Math.abs(offsetY) > 20) {closeCarousel()}
+            hFrame.style.left = `calc(-100vw * ${currentSlide})`;
+        }
+    }
+
+    closeElement.addEventListener('click', (event) => {
+        event.stopPropagation();
+        closeCarousel()
+    });
 
     function init () {
         filterElement.className = 'carousel-filter'
         hFrame.className = 'hFrame'
-        nextElement.className = 'carousel-next';
-        prevElement.className = 'carousel-prev';
         closeElement.className = 'carousel-close'
         closeElement.innerText = '✕' //тут можешь поменять значок закрытия
         motherElement.appendChild(filterElement);
-        hFrame.appendChild(nextElement);
-        hFrame.appendChild(prevElement);
         hFrame.appendChild(closeElement);
         motherElement.appendChild(hFrame);
 
@@ -60,6 +98,7 @@ function carousel(pictures) {
 
     function openCarousel() {
         this.scrollIntoView({ behavior: 'smooth'});
+        if(window.screen.width < minimalScreenWidth) return
         currentSlide = slides.indexOf(this);
         hFrame.style.left = `calc(-100vw * ${currentSlide})`;
         hFrame.style.top = `${this.getBoundingClientRect().top}px`;
@@ -74,7 +113,7 @@ function carousel(pictures) {
         console.log(hFrame.getElementsByClassName('hFrame-img'))
     }
 
-    function closeCarousel() {
+    function closeCarousel(event) {
         hFrame.style.top = `${slides[currentSlide].getBoundingClientRect().top}px`;
         hFrame.classList.remove('open');
         filterElement.classList.remove('open');
