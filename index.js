@@ -6,10 +6,6 @@ function carousel(pictures) {
 
     const minimalScreenWidth = 400 //ниже этой ширины экрана карусель не будет открываться, но останется скролл до картики
     let isMoove = false;
-    let startX 
-    let currentX 
-    let startY
-    let currentY
     let currentSlide = 5;
     let slides = []
     let hImges =[]
@@ -43,62 +39,16 @@ function carousel(pictures) {
         }
     }
 
-    // hFrame.ontouchstart = (event) => {
-        
-    //     startX = event.targetTouches[0].clientX;
-    //     startY = event.targetTouches[0].clientY;
-    //     currentX = event.targetTouches[0].clientX;
-    //     currentY = event.targetTouches[0].clientY;
+    hFrame.addEventListener('scroll', (event) => {
+        const newSlide =  Math.round(hFrame.scrollLeft / window.innerWidth);
+        if(newSlide !== currentSlide) {
+            currentSlide = newSlide;
+            scrollToTarget()
+        }
 
-    //     hFrame.ontouchmove = (event) => {
-    //         isMoove = true;
-    //         hFrame.style.transition = 'none'
-    //         currentX = event.targetTouches[0].clientX;
-    //         currentY = event.targetTouches[0].clientY;
-    //         hFrame.style.left = `calc(-100vw * ${currentSlide} + ${currentX - startX}px)`;
-    //     }
-    // }
+    })
 
     
-
-    // hFrame.ontouchend = (event) => {
-    //     isMoove = false;
-    //     hFrame.style.transition = 'all .5s';
-    
-    //     const offsetX = currentX - startX;
-    //     const offsetY = currentY - startY;
-    
-    //     // Проверка для прокрутки по горизонтали
-    //     if (Math.abs(offsetX) > window.screen.width / 10) {
-    //         const direction = Math.sign(offsetX);
-    //         if (direction === 1) { // свайп вправо
-    //             prevSlide();
-    //         } else if (direction === -1) { // свайп влево
-    //             nextSlide();
-    //         }
-    //     } else {
-    //         // Если свайп недостаточно велик
-    //         hFrame.style.left = `calc(-100vw * ${currentSlide})`;
-    //     }
-    
-    //     // Проверка для закрытия карусели при вертикальном движении
-    //     if (Math.abs(offsetY) > 100) {
-    //         closeCarusel();
-    //     }
-    // };
-
-
-
-
-
-    
-
-
-
-
-
-
-
 
     //functions
     function init () {
@@ -135,35 +85,37 @@ function carousel(pictures) {
     }
 
     function openCarousel() {
-        
-        this.scrollIntoView({ behavior: 'smooth', block: 'center'});
-        if(window.screen.width < minimalScreenWidth) return;
-
-        currentSlide = slides.indexOf(this);
-        const hImageElement = hImges[currentSlide];
-
-        const instruction = [
-            () => {
-                hFrame.style.display = 'flex';
-                hFrame.scrollTo({left: currentSlide * window.innerWidth});
-                hImageElement.style.maxWidth = this.getBoundingClientRect().width + 'px'
-                hImageElement.style.transition = 'none'
-                hImageElement.style.top = `calc(${this.getBoundingClientRect().height/2}px + ${this.getBoundingClientRect().top}px)`;
-                hImageElement.style.transform = 'translate(-50%, -50%) scale(100%)'
-            },
-            () => {
-                hFrame.style.opacity = '100%';
-                hImageElement.style.transition = 'all .5s';
-                hImageElement.style.top = '50%'
-                hImageElement.style.transform = 'translate(-50%, -50%) scale(80%)'
-                hFrame.style.transition = 'all .7s';
-            }
-        ]
-
-        instruction[0]();
+        scrollToTarget(this)
         setTimeout(() => {
-            instruction[1]();
+            if(window.screen.width < minimalScreenWidth) return;
+
+            currentSlide = slides.indexOf(this);
+            const hImageElement = hImges[currentSlide];
+    
+            const instruction = [
+                () => {
+                    hFrame.style.display = 'flex';
+                    hFrame.scrollTo({left: currentSlide * window.innerWidth});
+                    hImageElement.style.maxWidth = this.getBoundingClientRect().width + 'px'
+                    hImageElement.style.transition = 'none'
+                    hImageElement.style.top = `calc(${this.getBoundingClientRect().height/2}px + ${this.getBoundingClientRect().top}px)`;
+                    hImageElement.style.transform = 'translate(-50%, -50%) scale(100%)'
+                },
+                () => {
+                    hFrame.style.opacity = '100%';
+                    hImageElement.style.transition = 'all .5s';
+                    hImageElement.style.top = '50%'
+                    hImageElement.style.transform = 'translate(-50%, -50%) scale(80%)'
+                    hFrame.style.transition = 'all .7s';
+                }
+            ]
+    
+            instruction[0]();
+            setTimeout(() => {
+                instruction[1]();
+            }, 10)
         }, 10)
+       
     }
 
 
@@ -193,34 +145,54 @@ function carousel(pictures) {
     }
 
     function nextSlide() {
+        console.log(isMoove)
+        if(isMoove) return
+        isMoove = true
         if(currentSlide + 1 < slides.length) {
             currentSlide ++
-            updateCarousel();
         } else {
-
+            currentSlide = 0
         }
+        updateCarousel();
     }
 
     function prevSlide() {
+        console.log(isMoove)
+        if(isMoove) return
+        isMoove = true
         if(currentSlide - 1 >= 0) {
             currentSlide --
-            updateCarousel();
         } else {
-
+            currentSlide = slides.length - 1;
         }
+        updateCarousel();
     }
 
     function updateCarousel () {
+        scrollToTarget()
         hFrame.scrollTo({
             left: currentSlide * window.innerWidth,
             behavior: 'smooth'
         });
+    }
+
+    function scrollToTarget(target = slides[currentSlide]) {
+        const targetRect = target.getBoundingClientRect();
+        window.scrollTo({
+            top: window.scrollY + targetRect.top + targetRect.height / 2 - window.innerHeight /2 ,
+            behavior : 'smooth'
+        });
+
+        setTimeout(() => {
+            isMoove = false;
+        }, 3000)
     }
 }
 
 
 const pictures = [
     '001.jpg',
+    '004.jpg',
     '002.jpg',
     '004.jpg',
     '003.jpg',
