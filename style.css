@@ -33,7 +33,7 @@ body {
     left: 0;
     height: 100vh;
     align-items: center;
-    /* display: none; */
+    display: none;
     /* opacity: 0%; */
     /* transition: opacity .5s; */
     /* width: 100%; */
@@ -43,7 +43,7 @@ body {
     height: 100vh;
     overflow-x: scroll;
     scroll-snap-type: x mandatory;
-    display: flex;
+    /* display: flex; */
 }
 
 .hFrame::-webkit-scrollbar {
@@ -60,13 +60,13 @@ body {
 .hFrame-slide {
     /* flex-shrink: 0;
     width: 100vw;
-    height: 100vh;
+    /* height: 100vh; */
     position: relative;
-    transition: all .5s; */
+    transition: all .5s; 
 
     min-width: 100vw;
     height: 100vh;
-    background-color: yellow;
+    background-color: rgba(255, 255, 255, 0.779);
     /* border: 1px solid #ddd; */
     scroll-snap-align: center;
     display: flex;
@@ -78,10 +78,11 @@ body {
 }
 
 .hFrame-slide-img {
-    /* transform: translate(-50%, -50%) scale(80%); */
+    transform: translate(-50%, -50%) scale(80%);
     max-height: 100vh;
-    max-width: clamp(295px, calc(100vw - 30px), 600px);
-    /* position: absolute; */
+    /* max-width: clamp(295px, calc(100vw - 30px), 600px); */
+    max-width: 100%;
+    position: absolute;
     top: 50%;
     left: 50%;
 

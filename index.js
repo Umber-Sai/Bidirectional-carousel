@@ -2,7 +2,6 @@
 function carousel(pictures) {
     const motherElement = document.getElementById('carousel')
     const hFrame = document.createElement('div') //horizontal frame
-    const filterElement = document.createElement('div');
     const closeElement = document.createElement('close');
 
     const minimalScreenWidth = 400 //ниже этой ширины экрана карусель не будет открываться, но останется скролл до картики
@@ -33,14 +32,12 @@ function carousel(pictures) {
             hFrame.classList.remove('left');
             hFrame.classList.add('right');
             hFrame.onclick = () => {
-                if(isMoove) return
                 nextSlide()
             }
         } else {
             hFrame.classList.remove('right');
             hFrame.classList.add('left');
             hFrame.onclick = () => {
-                if(isMoove) return
                 prevSlide()
             }
         }
@@ -64,31 +61,31 @@ function carousel(pictures) {
 
     
 
-    hFrame.ontouchend = (event) => {
-        isMoove = false;
-        hFrame.style.transition = 'all .5s';
+    // hFrame.ontouchend = (event) => {
+    //     isMoove = false;
+    //     hFrame.style.transition = 'all .5s';
     
-        const offsetX = currentX - startX;
-        const offsetY = currentY - startY;
+    //     const offsetX = currentX - startX;
+    //     const offsetY = currentY - startY;
     
-        // Проверка для прокрутки по горизонтали
-        if (Math.abs(offsetX) > window.screen.width / 10) {
-            const direction = Math.sign(offsetX);
-            if (direction === 1) { // свайп вправо
-                prevSlide();
-            } else if (direction === -1) { // свайп влево
-                nextSlide();
-            }
-        } else {
-            // Если свайп недостаточно велик
-            hFrame.style.left = `calc(-100vw * ${currentSlide})`;
-        }
+    //     // Проверка для прокрутки по горизонтали
+    //     if (Math.abs(offsetX) > window.screen.width / 10) {
+    //         const direction = Math.sign(offsetX);
+    //         if (direction === 1) { // свайп вправо
+    //             prevSlide();
+    //         } else if (direction === -1) { // свайп влево
+    //             nextSlide();
+    //         }
+    //     } else {
+    //         // Если свайп недостаточно велик
+    //         hFrame.style.left = `calc(-100vw * ${currentSlide})`;
+    //     }
     
-        // Проверка для закрытия карусели при вертикальном движении
-        if (Math.abs(offsetY) > 100) {
-            closeCarusel();
-        }
-    };
+    //     // Проверка для закрытия карусели при вертикальном движении
+    //     if (Math.abs(offsetY) > 100) {
+    //         closeCarusel();
+    //     }
+    // };
 
 
 
@@ -105,11 +102,9 @@ function carousel(pictures) {
 
     //functions
     function init () {
-        filterElement.className = 'carousel-filter'
         hFrame.className = 'hFrame'
         closeElement.className = 'carousel-close'
         closeElement.innerText = '✕' //тут можешь поменять значок закрытия
-        motherElement.appendChild(filterElement);
         hFrame.appendChild(closeElement);
         motherElement.appendChild(hFrame);
 
@@ -133,7 +128,6 @@ function carousel(pictures) {
             const hSlideImg = document.createElement('img');
             hSlideImg.setAttribute('src',`./images/${pictures[i]}`);
             hSlideImg.classList.add('hFrame-slide-img');
-            // hSlideImg.style.maxWidth = motherElement.getBoundingClientRect().width + 'px'
             hImges.push(hSlideImg)
             hSlide.appendChild(hSlideImg);
             hFrame.append(hSlide)
@@ -150,17 +144,15 @@ function carousel(pictures) {
 
         const instruction = [
             () => {
-                hImageElement.style.width = this.getBoundingClientRect().width + 'px'
                 hFrame.style.display = 'flex';
+                hFrame.scrollTo({left: currentSlide * window.innerWidth});
+                hImageElement.style.maxWidth = this.getBoundingClientRect().width + 'px'
                 hImageElement.style.transition = 'none'
-                hFrame.style.left = `calc(-100vw * ${currentSlide})`;
                 hImageElement.style.top = `calc(${this.getBoundingClientRect().height/2}px + ${this.getBoundingClientRect().top}px)`;
                 hImageElement.style.transform = 'translate(-50%, -50%) scale(100%)'
-                hFrame.style.opacity = '100%';
-                filterElement.style.display = 'block';
             },
             () => {
-                filterElement.style.opacity = '80%'
+                hFrame.style.opacity = '100%';
                 hImageElement.style.transition = 'all .5s';
                 hImageElement.style.top = '50%'
                 hImageElement.style.transform = 'translate(-50%, -50%) scale(80%)'
@@ -185,11 +177,9 @@ function carousel(pictures) {
                 hImageElement.style.top = `calc(${SlideElement.getBoundingClientRect().height/2}px + ${SlideElement.getBoundingClientRect().top}px)`;
                 hImageElement.style.transform = 'translate(-50%, -50%) scale(100%)'
                 hFrame.style.opacity = '0%'
-                filterElement.style.opacity = '0%'
             },
             () => {
                 hImageElement.style.transform = 'translate(-50%, -50%) scale(80%)'
-                filterElement.style.display = 'none';
                 hImageElement.style.top = '50%'
                 hFrame.style.display = 'none';
                 hFrame.style.transition = 'none';
@@ -203,28 +193,28 @@ function carousel(pictures) {
     }
 
     function nextSlide() {
-        if(currentSlide + 1 < pictures.length) {
+        if(currentSlide + 1 < slides.length) {
             currentSlide ++
-            console.log(currentSlide)
-            document.getElementById('slide' + currentSlide).scrollIntoView({ behavior: 'smooth', block: 'center' });
-            hFrame.style.left = `calc(-100vw * ${currentSlide})`;
+            updateCarousel();
         } else {
-            hFrame.style.left = `calc(-100vw * ${currentSlide} - 10vw)`;
-            setTimeout(() => {
-                hFrame.style.left = `calc(-100vw * ${currentSlide})`;
-            }, 100);
+
         }
     }
 
     function prevSlide() {
         if(currentSlide - 1 >= 0) {
             currentSlide --
-            hFrame.scrollTo({
-                left: currentSlide * window.innerWidth + 'px',
-                behavior: 'smooth'
-            });
+            updateCarousel();
+        } else {
+
         }
-       
+    }
+
+    function updateCarousel () {
+        hFrame.scrollTo({
+            left: currentSlide * window.innerWidth,
+            behavior: 'smooth'
+        });
     }
 }
 
