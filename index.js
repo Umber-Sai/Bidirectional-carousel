@@ -4,7 +4,7 @@ function carousel(pictures) {
     const hFrame = document.createElement('div') //horizontal frame
     const closeElement = document.createElement('close');
 
-    const minimalScreenWidth = 400 //ниже этой ширины экрана карусель не будет открываться, но останется скролл до картики
+    const minimalScreenWidth = 600 //ниже этой ширины экрана карусель не будет открываться, но останется скролл до картики
     let isMoove = false;
     let currentSlide = 5;
     let slides = []
@@ -185,7 +185,7 @@ function carousel(pictures) {
 
         setTimeout(() => {
             isMoove = false;
-        }, 3000)
+        }, 1000)
     }
 }
 
